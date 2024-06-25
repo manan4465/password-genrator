@@ -1,58 +1,100 @@
+<script setup>
+import { ref } from "vue";
+
+const passwordLength = ref(12);
+const includeUppercase = ref(true);
+const includeNumbers = ref(true);
+const includeSymbols = ref(true);
+const generatedPassword = ref("");
+
+const generatePassword = () => {
+  const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+  const uppercaseChars = includeUppercase.value
+    ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    : "";
+  const numberChars = includeNumbers.value ? "0123456789" : "";
+  const symbolChars = includeSymbols.value ? "!@#$%^&*()_+[]{}|;:,.<>?/~`" : "";
+
+  const allChars = lowercaseChars + uppercaseChars + numberChars + symbolChars;
+
+  let password = "";
+  for (let i = 0; i < passwordLength.value; i++) {
+    const randomIndex = Math.floor(Math.random() * allChars.length);
+    password += allChars[randomIndex];
+  }
+
+  generatedPassword.value = password;
+};
+</script>
+
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="password-generator-container">
+    <h2 class="password-generator-title">Password Generator</h2>
+    <label for="length">Password Length:</label>
+    <input
+      type="number"
+      id="length"
+      v-model="passwordLength"
+      min="4"
+      max="32"
+    />
+    <br />
+    <label for="includeUppercase">Include Uppercase:</label>
+    <input type="checkbox" id="includeUppercase" v-model="includeUppercase" />
+    <br />
+    <label for="includeNumbers">Include Numbers:</label>
+    <input type="checkbox" id="includeNumbers" v-model="includeNumbers" />
+    <br />
+    <label for="includeSymbols">Include Symbols:</label>
+    <input type="checkbox" id="includeSymbols" v-model="includeSymbols" />
+    <br />
+    <button @click="generatePassword" class="generate-button">
+      Generate Password
+    </button>
+    <div v-if="generatedPassword" class="generated-password">
+      <strong>Your Password:</strong> {{ generatedPassword }}
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.password-generator-container {
+  max-width: 400px;
+  margin: 50px auto;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.password-generator-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
 }
-a {
-  color: #42b983;
+
+.generate-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.generate-button:hover {
+  background-color: #2980b9;
+}
+
+.generated-password {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  color: #333;
 }
 </style>
